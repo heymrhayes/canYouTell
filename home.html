@@ -1,0 +1,25 @@
+<div id="howToPlay">
+
+
+<p class="mdc-typography--body1">
+We wondered whether you can determine the political party of members of Congress based on their appearance.
+  </p>
+
+<p class="mdc-typography--body1">
+So we made this game for you to try for yourself.  You'll see pictures of members of the 116th Congress, with buttons for you to indicate your guess about their party affiliation.
+</p>
+
+<p class="mdc-typography--body1">
+When you've guessed them all (or when you get tired), you can use the menu icon to navigate to  the Results screen.  On that screen, you can also clear your previous guesses and restart.
+</p>
+<button id="start" class="mdc-button mdc-button--raised">
+  <div class="mdc-button__ripple"></div>
+  <span class="mdc-button__label">Get Started!</span>
+</button>
+<img id="parties" src="parties.png" alt="political symbols">
+</div>
+<script>
+  $("#start").on("click", (e) => {
+    loadPage("play");
+  });
+  </script>

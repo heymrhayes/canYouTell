@@ -1,0 +1,70 @@
+<h4 class="mdc-typography--headline4">How did you do?</h4>
+
+<div class="mdc-data-table"><table class="mdc-data-table__table"><thead><tr class="mdc-data-table__header-row"><th class="mdc-data-table__header-cell" role="columnheader" scope="col">Affiliation</th><th class="mdc-data-table__header-cell" role="columnheader" scope="col">Dem</th><th class="mdc-data-table__header-cell" role="columnheader" scope="col">Rep</th><th class="mdc-data-table__header-cell" role="columnheader" scope="col">Ind</th><th class="mdc-data-table__header-cell" role="columnheader" scope="col">Skp</th>
+<th class="mdc-data-table__header-cell" role="columnheader" scope="col">%</th></tr></thead><tbody class="mdc-data-table__content"><tr data-row-id="Democratic" class="mdc-data-table__row" aria-selected="false"><td class="mdc-data-table__cell">Democratic</td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td>
+<td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td></tr><tr data-row-id="Republican" class="mdc-data-table__row" aria-selected="false"><td class="mdc-data-table__cell" id="u13">Republican</td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td></tr><tr data-row-id="Independent" class="mdc-data-table__row" aria-selected="false"><td class="mdc-data-table__cell" id="u14">Independent</td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td><td class="mdc-data-table__cell mdc-data-table__cell--numeric"></td></tr></tbody></table></div>
+
+<p class="mdc-typography--body1">
+  The rows show the actual party affiliation of members; the columns show the values you guessed. The last column is the percentage of correct guesses.
+
+
+</p>
+
+<button id="playAgain" class="mdc-button mdc-button--raised">
+  <div class="mdc-button__ripple"></div>
+  <span class="mdc-button__label">Clear results and play again!</span>
+</button>
+
+<script>
+  var results = {
+    "Democratic": {"Democratic": 0, "Republican": 0, "Independent": 0, "Skipped":0, "total": 0, "correct": 0},
+    "Republican": {"Democratic": 0, "Republican": 0, "Independent": 0, "Skipped":0, "total": 0, "correct": 0},  
+    "Independent": {"Democratic": 0, "Republican": 0, "Independent": 0, "Skipped":0, "total": 0, "correct": 0}
+  }
+  var guessLookup = 
+  {"Dem": "Democratic", "Rep": "Republican", "Ind": "Independent", "Skip":"Skipped"}
+
+ var userEntries = db.guesses;
+
+// loop and update results
+userEntries.each(function(entry) {
+    var member = memberData[entry.memberNumber];
+    var guess = entry.guess;
+    results[member.party][guessLookup[guess]]++;
+    results[member.party]["total"]++;
+    if (guessLookup[guess] == member.party) {
+      results[member.party]["correct"]++;
+    }
+
+}).then(function() {
+
+
+
+  for (var party in results) {
+  if (results.hasOwnProperty(party)) {
+      var displayPercentage = 0;
+      $("tr[data-row-id='" + party + "']").find("td:eq(1)").text(results[party]["Democratic"]);
+      $("tr[data-row-id='" + party + "']").find("td:eq(2)").text(results[party]["Republican"]);
+      $("tr[data-row-id='" + party + "']").find("td:eq(3)").text(results[party]["Independent"]);
+      $("tr[data-row-id='" + party + "']").find("td:eq(4)").text(results[party]["Skipped"]);
+      
+      if (results[party]["total"] > 0 ) {
+        displayPercentage = parseFloat(results[party]["correct"]/results[party]["total"]*100).toFixed(1);
+      }
+
+      $("tr[data-row-id='" + party + "']").find("td:eq(5)").text(displayPercentage);
+  }
+
+
+}
+});
+
+
+
+  $("#playAgain").on("click", (e) => {
+    db.guesses.clear();
+    db.history.put({"date":new Date(), "results": results});
+    loadPage("play");
+  });
+
+</script>

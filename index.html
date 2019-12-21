@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="viewport" content="width=device-width">
+    <title>Can You Tell?</title>
+    <link href="https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/material-components-web@4.0.0/dist/material-components-web.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <style>
+      body {margin: 0;}
+      :root {
+        --mdc-theme-primary: #5B9B6A;
+      }
+      .template {display:none;}
+      .mdc-dialog__container {margin:5px;}
+      .mdc-typography--headline5  {text-align:center;}
+      .mdc-card {margin: 10px auto; width:90%;}
+      .my-card__media
+      /* .mdc-card__primary-action  */
+      {min-height: 600px;
+  background-image: url("https://i.gifer.com/origin/4d/4dc11d17f5292fd463a60aa2bbb41f6a_w200.gif");
+}
+
+.mdc-card__action-buttons {width: 100%;}
+.mdc-card__action--button {width:25%;}
+#content {text-align:center;}
+.mdc-typography--body1 {margin:15px;}
+#parties {width:90%;}
+
+        
+    </style>
+
+
+  </head>
+  <body>
+     <aside class="mdc-drawer mdc-drawer--modal" data-mdc-auto-init="MDCDrawer">
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        <a class="mdc-list-item mdc-list-item--activated" href="#home" aria-current="page">
+<!--           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">inbox</i> -->
+          <span class="mdc-list-item__text">Home</span>
+        </a>
+        <a class="mdc-list-item" href="#play">
+<!--           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i> -->
+          <span class="mdc-list-item__text">Play</span>
+        </a>
+          
+        <a class="mdc-list-item" href="#results">
+<!--           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i> -->
+          <span class="mdc-list-item__text">Results</span>
+        </a>  
+
+        <a class="mdc-list-item" href="#about">
+<!--           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i> -->
+          <span class="mdc-list-item__text">About</span>
+        </a>   
+
+        <a class="mdc-list-item" href="#addToHomeScreen">
+<!--           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">send</i> -->
+          <span class="mdc-list-item__text">Add to Home Screen</span>
+        </a>                        
+
+      </nav>
+    </div>
+  </aside>
+
+  <div class="mdc-drawer-scrim"></div>
+
+    <header class="mdc-top-app-bar">
+  <div class="mdc-top-app-bar__row">
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+      <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+      <span class="mdc-top-app-bar__title">Can You Tell?</span>
+    </section>
+    <!-- <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar">
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Download">file_download</button>
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Print this page">print</button>
+      <button class="material-icons mdc-top-app-bar__action-item mdc-icon-button" aria-label="Bookmark this page">bookmark</button>
+    </section> -->
+  </div>
+</header>
+
+<div class="mdc-drawer-app-content mdc-top-app-bar--fixed-adjust" id="content">
+       
+ 
+</div>      
+      
+      
+      
+      
+    <script src="memberData.js"></script>
+    <script src="https://unpkg.com/dexie@2.0.4/dist/dexie.js"></script>
+    <script>
+      window.mdc.autoInit();
+
+      const drawer = document.querySelector(".mdc-drawer").MDCDrawer;
+
+    
+      // open drawer on nav icon
+      $(".mdc-top-app-bar__navigation-icon").on("click", function(){
+        drawer.open = true;
+      });
+    
+      // close drawer on selection
+      $(".mdc-list-item").on("click", function() {
+          var page = $(this).attr("href").replace("#","")
+          
+          
+          if (page == "addToHomeScreen") {
+            showInstallPrompt();
+          } else {
+            loadPage(page);
+          }
+          
+          drawer.open = false;
+
+      });
+
+      let imageDomain = "https://www.congress.gov";
+
+      let membersViewed = [];
+      let currentMemberNumber = -1;
+
+      var db = new Dexie("canYouTell");
+      db.version(1).stores({
+          guesses: '++id,memberNumber',
+          history: '++id'
+      });
+        
+      let loadNextMember = () => {
+        var randNumber = Math.floor(Math.random() * memberData.length);
+
+        let loopCount = 0;
+        while (loopCount < 100 
+                  && (membersViewed.includes(randNumber)
+                  || !memberData[randNumber].hasOwnProperty("image"))) {
+          randNumber = Math.floor(Math.random() * memberData.length);
+          loopCount++;
+        } 
+        
+        currentMemberNumber = randNumber;
+        let imgURL = imageDomain + memberData[randNumber]["image"];
+
+        $(".my-card__media").css("background-image","url('" + imgURL + "')");
+      };
+
+
+      let loadPage = (pageName) => {
+        $("#content").load(pageName + ".html");
+      };
+
+
+      let recordGuess = (memberNumber, guess) => {
+        db.guesses.put(
+          {memberNumber: memberNumber,
+          guess: guess}
+        );
+      };
+    
+      loadPage("home");
+
+
+
+    </script>
+    <script>
+              if ('serviceWorker' in navigator) {
+                navigator.serviceWorker
+                         .register('./sw.js');
+              }
+      
+      </script>
+
+
+      <script>
+
+        // add to homescreen from https://love2dev.com/pwa/add-to-homescreen-library/
+var _beforeInstallPrompt;
+
+if ( "onbeforeinstallprompt" in window ) {
+
+	window.addEventListener( "beforeinstallprompt", beforeInstallPrompt );
+
+}
+
+function beforeInstallPrompt( evt ) {
+
+	evt.preventDefault();
+
+	_beforeInstallPrompt = evt;
+
+}
+
+
+function showInstallPrompt() {
+return _beforeInstallPrompt.prompt()
+   .then( function ( evt ) {
+
+      // Wait for the user to respond to the prompt
+      return _beforeInstallPrompt.userChoice;
+
+   } )
+   .then( function ( choiceResult ) {
+
+      //do stuff here
+   } )
+   .catch( function ( err ) {
+
+      if ( err.message.indexOf( "user gesture" ) > -1 ) {
+         //recycle, but make sure there is a user gesture involved
+      } else if ( err.message.indexOf( "The app is already installed" ) > -1 ) {
+         //the app is installed, no need to prompt, but you may need to log or update state values
+      } else {
+         return err;
+      }
+
+   } );
+}
+        </script>
+
+  </body>
+</html>

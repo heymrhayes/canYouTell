@@ -1,0 +1,21 @@
+{
+  "short_name": "Can You Tell?",
+  "name": "Can You Tell Which Party?",
+  "icons": [
+    {
+      "src": "./192-question-mark.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "./512-36601.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#5B9B6A",
+  "display": "standalone",
+  "scope": "./",
+  "theme_color": "#5B9B6A"
+}
