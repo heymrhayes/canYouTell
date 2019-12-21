@@ -1,7 +1,7 @@
 // modified from https://developers.google.com/web/fundamentals/primers/service-workers
 
 
-var CACHE_NAME = 'canYouTell-cache-v1';
+var CACHE_NAME = 'canYouTell-cache-v2';
 var urlsToCache = [
   './',
   './index.html',
