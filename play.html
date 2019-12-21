@@ -51,6 +51,9 @@
 
 
 <script>
+  // handle card sizing
+  $('.my-card__media').css("height", ((screen.availHeight - 100)*.9) + "px");
+  
   loadNextMember();
 
   $(".mdc-card__action--button").off("click");
