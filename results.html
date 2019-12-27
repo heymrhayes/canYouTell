@@ -41,22 +41,22 @@ userEntries.each(function(entry) {
 
 
   for (var party in results) {
-  if (results.hasOwnProperty(party)) {
-      var displayPercentage = 0;
-      $("tr[data-row-id='" + party + "']").find("td:eq(1)").text(results[party]["Democratic"]);
-      $("tr[data-row-id='" + party + "']").find("td:eq(2)").text(results[party]["Republican"]);
-      $("tr[data-row-id='" + party + "']").find("td:eq(3)").text(results[party]["Independent"]);
-      $("tr[data-row-id='" + party + "']").find("td:eq(4)").text(results[party]["Skipped"]);
-      
-      if (results[party]["total"] > 0 ) {
-        displayPercentage = parseFloat(results[party]["correct"]/results[party]["total"]*100).toFixed(1);
-      }
+    if (results.hasOwnProperty(party)) {
+        var displayPercentage = 0;
+        $("tr[data-row-id='" + party + "']").find("td:eq(1)").text(results[party]["Democratic"]);
+        $("tr[data-row-id='" + party + "']").find("td:eq(2)").text(results[party]["Republican"]);
+        $("tr[data-row-id='" + party + "']").find("td:eq(3)").text(results[party]["Independent"]);
+        $("tr[data-row-id='" + party + "']").find("td:eq(4)").text(results[party]["Skipped"]);
 
-      $("tr[data-row-id='" + party + "']").find("td:eq(5)").text(displayPercentage);
+        if (results[party]["total"] > 0 ) {
+          displayPercentage = parseFloat(results[party]["correct"]/results[party]["total"]*100).toFixed(1);
+        }
+
+        $("tr[data-row-id='" + party + "']").find("td:eq(5)").text(displayPercentage);
+    }
+
+
   }
-
-
-}
 });
 
 
