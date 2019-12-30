@@ -35,7 +35,7 @@
 
   $(".congresspersonDisplay .mdc-card__action--button").off("click");
 
-  $("congresspersonDisplay .mdc-card__action--button").on("click", function (e) {
+  $(".congresspersonDisplay .mdc-card__action--button").on("click", function (e) {
     e.stopPropagation();
     var guess = $(this).find(".mdc-button__label").text();
     recordGuess(currentMemberNumber,guess);
